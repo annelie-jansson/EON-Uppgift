@@ -5,10 +5,7 @@ namespace EON_Uppgift_Tests
     [TestFixture]
     public class CycleCalculatorTests
     {
-        [Test]
-        public void TestLongCycle()
-        {
-            List<string> cycles = new() {
+        private List<string> cycles = new() {
 "addx 15",
 "addx -11",
 "addx 6",
@@ -154,13 +151,26 @@ namespace EON_Uppgift_Tests
 "addx -11",
 "noop",
 "noop",
-"noop",
-            };
+"noop"};
+
+        [Test]
+        public void TestGetSignalStrength()
+        {
             CycleCalculator calculator = new CycleCalculator();
 
-            var result = calculator.RunCycles(cycles);
+            var result = calculator.GetSignalStrength(cycles);
 
             Assert.That(result, Is.EqualTo(13140));
+        }
+
+        [Test]
+        public void TestRenderSprite()
+        {
+            CycleCalculator calculator = new CycleCalculator();
+
+            var result = calculator.RenderSprite(cycles);
+
+            Assert.That(result, Is.EqualTo("##..##..##..##..##..##..##..##..##..##..\r\n###...###...###...###...###...###...###.\r\n####....####....####....####....####....\r\n#####.....#####.....#####.....#####.....\r\n######......######......######......####\r\n#######.......#######.......#######....."));
         }
 
         [Test]
@@ -169,7 +179,7 @@ namespace EON_Uppgift_Tests
             List<string> cycles = new() { "noop", "noop", "noop" };
             CycleCalculator calculator = new CycleCalculator(17);
 
-            var result = calculator.RunCycles(cycles);
+            var result = calculator.GetSignalStrength(cycles);
 
             Assert.That(result, Is.EqualTo(20));
         }
@@ -181,7 +191,7 @@ namespace EON_Uppgift_Tests
             List<string> cycles = new() { "addx 2", "noop", "noop" };
             CycleCalculator calculator = new CycleCalculator(17);
 
-            var result = calculator.RunCycles(cycles);
+            var result = calculator.GetSignalStrength(cycles);
 
             Assert.That(result, Is.EqualTo(60));
         }
@@ -192,11 +202,10 @@ namespace EON_Uppgift_Tests
             List<string> cycles = new() { "addx -2", "noop", "noop" };
             CycleCalculator calculator = new CycleCalculator(17);
 
-            var result = calculator.RunCycles(cycles);
+            var result = calculator.GetSignalStrength(cycles);
 
             Assert.That(result, Is.EqualTo(-20));
         }
-
 
         [Test]
         public void AddXTakesTwoCyclesToScore()
@@ -204,10 +213,9 @@ namespace EON_Uppgift_Tests
             List<string> cycles = new() { "noop", "addx -999", "noop" };
             CycleCalculator calculator = new CycleCalculator(17);
 
-            var result = calculator.RunCycles(cycles);
+            var result = calculator.GetSignalStrength(cycles);
             
             Assert.That(result, Is.EqualTo(20));
         }
-
     }
 }

@@ -152,6 +152,4 @@ List<string> signals = new() {
 
 CycleCalculator cycleCalculator = new();
 
-var result = cycleCalculator.RunCycles(signals);
-
-Console.WriteLine($"The sum is: {result}");
+cycleCalculator.StartClockCircuit(signals);

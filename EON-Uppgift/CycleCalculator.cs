@@ -12,6 +12,8 @@ namespace EON_Uppgift
         private int _cycle = 0;
         private int _x = 1;
         private int _sum = 0;
+        private string _CRT = "";
+        private int _crtLength = 0;
 
         /// <summary>
         /// Only for testing purposes
@@ -27,30 +29,50 @@ namespace EON_Uppgift
 
         }
 
-        public int RunCycles(List<string> signals)
+        internal void StartClockCircuit(List<string> signals, bool shouldPrint = true)
         {
             foreach (string signal in signals)
             {
-                if (_cycle > 220) break;
+                ExecuteSignal(signal);
 
-                Tick(signal);
+                if (_cycle == 240) break;
+
             }
-            return _sum;
-            
+
+            if (shouldPrint)
+            {
+                Console.WriteLine($"The signal strength is: {_sum}");
+                Console.WriteLine("--------------------------------------");
+                Console.WriteLine($"CRT below:");
+                Console.WriteLine(_CRT);
+            }
         }
 
-        private void Tick(string signal)
+        public int GetSignalStrength(List<string> signals)
         {
-            IncrementAndHandleCycle();
+            StartClockCircuit(signals, false);
+            return _sum;
+        }
+
+        public string RenderSprite(List<string> signals)
+        {
+            StartClockCircuit(signals, false);
+            return _CRT;
+        }
+
+        private void ExecuteSignal(string signal)
+        {
+            ExecuteCycle();
 
             if (signal.Contains("noop")) return;
+            if (_cycle == 240) return;
 
-            IncrementAndHandleCycle();
+            ExecuteCycle();
 
             _x += GetValueFromString(signal);
         }
 
-        private void IncrementAndHandleCycle()
+        private void ExecuteCycle()
         {
             _cycle++;
 
@@ -58,6 +80,30 @@ namespace EON_Uppgift
             {
                 _sum += _x * _cycle;
             }
+
+            DrawPixel();
+
+            if (_cycle == 240) return;
+
+            if (_crtLength == 40)
+            {
+                _CRT += "\r\n";
+                _crtLength = 0;
+            }
+        }
+
+        private void DrawPixel()
+        {
+            if (_x == _crtLength || _x + 1 == _crtLength || _x - 1 == _crtLength)
+            {
+                _CRT += "#";
+            }
+            else
+            {
+                _CRT += ".";
+            }
+
+            _crtLength++;
         }
 
         private int GetValueFromString(string valueAndText)
